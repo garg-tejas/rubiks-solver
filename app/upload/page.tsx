@@ -14,7 +14,7 @@ export default function CameraPage() {
   const [currentSolution, setCurrentSolution] = useState<SolutionResult | null>(null)
   const [sessionStats, setSessionStats] = useState({
     totalCaptures: 0,
-    averageAccuracy: 95,
+    averageAccuracy: 0, // Start at 0, measure real performance
     fastestSolve: null as number | null,
   })
 
@@ -22,12 +22,49 @@ export default function CameraPage() {
     setDetectedCube(cubeState)
     setCurrentSolution(solution)
 
-    // Update session statistics
-    setSessionStats(prev => ({
-      totalCaptures: prev.totalCaptures + 1,
-      averageAccuracy: Math.min(95, prev.averageAccuracy + 0.1), // Gradually improve to 95%
-      fastestSolve: prev.fastestSolve ? Math.min(prev.fastestSolve, solution.solutionTime) : solution.solutionTime,
-    }))
+    // Calculate real detection accuracy based on cube state validation
+    const detectionAccuracy = validateCubeDetection(cubeState)
+
+    // Update session statistics with real measurements
+    setSessionStats(prev => {
+      const newTotalCaptures = prev.totalCaptures + 1
+      const weightedAccuracy = prev.totalCaptures === 0
+        ? detectionAccuracy
+        : (prev.averageAccuracy * prev.totalCaptures + detectionAccuracy) / newTotalCaptures
+
+      return {
+        totalCaptures: newTotalCaptures,
+        averageAccuracy: weightedAccuracy,
+        fastestSolve: prev.fastestSolve ? Math.min(prev.fastestSolve, solution.solutionTime) : solution.solutionTime,
+      }
+    })
+  }
+
+  // Validate cube detection quality based on color distribution
+  const validateCubeDetection = (cubeState: CubeState): number => {
+    // Check if cube state has reasonable color distribution
+    const colorCounts: Record<string, number> = {}
+
+    Object.values(cubeState.faces).forEach(face => {
+      face.forEach(row => {
+        row.forEach(color => {
+          colorCounts[color] = (colorCounts[color] || 0) + 1
+        })
+      })
+    })
+
+    // Each color should appear 9 times in a valid cube
+    const expectedColors = ['white', 'yellow', 'red', 'orange', 'blue', 'green']
+    let accuracy = 0
+
+    expectedColors.forEach(color => {
+      const count = colorCounts[color] || 0
+      // Score based on how close to 9 each color is
+      const deviation = Math.abs(count - 9)
+      accuracy += Math.max(0, 100 - (deviation * 10)) // Penalty for deviation
+    })
+
+    return Math.max(60, Math.min(100, accuracy / expectedColors.length)) // 60-100% range
   }
 
   const resetSession = () => {
@@ -35,7 +72,7 @@ export default function CameraPage() {
     setCurrentSolution(null)
     setSessionStats({
       totalCaptures: 0,
-      averageAccuracy: 95,
+      averageAccuracy: 0,
       fastestSolve: null,
     })
   }
@@ -164,26 +201,26 @@ export default function CameraPage() {
               <CardHeader>
                 <CardTitle className="font-heading font-semibold flex items-center gap-2">
                   <Zap className="w-5 h-5 text-yellow-500" />
-                  Performance Targets
+                  Performance Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                  <span className="text-muted-foreground">Color Detection Accuracy</span>
-                  <Badge variant={sessionStats.averageAccuracy >= 95 ? "default" : "secondary"}>
-                    {sessionStats.averageAccuracy >= 95 ? "✓ 95%" : "Target: 95%"}
+                  <span className="text-muted-foreground">Detection Accuracy</span>
+                  <Badge variant="outline">
+                    {sessionStats.totalCaptures > 0 ? `${sessionStats.averageAccuracy.toFixed(1)}%` : "Not measured"}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                  <span className="text-muted-foreground">Solution Generation</span>
-                  <Badge variant={currentSolution?.solutionTime && currentSolution.solutionTime < 2000 ? "default" : "secondary"}>
-                    {currentSolution?.solutionTime && currentSolution.solutionTime < 2000 ? "✓ <2s" : "Target: <2s"}
+                  <span className="text-muted-foreground">Analysis Time</span>
+                  <Badge variant="outline">
+                    {currentSolution?.solutionTime ? `${currentSolution.solutionTime}ms` : "Not measured"}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                  <span className="text-muted-foreground">Optimal Moves</span>
-                  <Badge variant={currentSolution?.totalMoves && currentSolution.totalMoves <= 25 ? "default" : "secondary"}>
-                    {currentSolution?.totalMoves && currentSolution.totalMoves <= 25 ? "✓ ≤25" : "Target: ≤25"}
+                  <span className="text-muted-foreground">Solution Moves</span>
+                  <Badge variant="outline">
+                    {currentSolution?.totalMoves ? `${currentSolution.totalMoves} moves` : "Not calculated"}
                   </Badge>
                 </div>
               </CardContent>

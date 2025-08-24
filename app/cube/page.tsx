@@ -48,7 +48,7 @@ export default function CubePage() {
     setTimeElapsed(0)
     setMoveCount(0)
 
-    console.log("[v0] Scrambling cube...")
+    console.log("[Cube] Scrambling cube...")
 
     setTimeout(() => {
       setIsScrambling(false)
@@ -67,7 +67,7 @@ export default function CubePage() {
       timerRef.current = undefined
     }
 
-    console.log("[v0] Reset cube to solved state")
+    console.log("[Cube] Reset cube to solved state")
   }
 
   const handleGetSolution = async () => {
@@ -77,9 +77,9 @@ export default function CubePage() {
       const solution = await cubeManager.getSolution()
       setCurrentSolution(solution)
       setSolutionsUsed((prev) => prev + 1)
-      console.log("[v0] Generated solution:", solution)
+      console.log("[Cube] Generated solution:", solution)
     } catch (error) {
-      console.error("[v0] Error generating solution:", error)
+      console.error("[Cube] Error generating solution:", error)
     } finally {
       setIsGettingSolution(false)
     }
@@ -135,11 +135,11 @@ export default function CubePage() {
                   className="w-full"
                   solution={currentSolution}
                   onMoveComplete={(move) => {
-                    console.log('[v0] Move completed:', move)
+                    console.log('[Cube] Move completed:', move)
                     setMoveCount(prev => prev + 1)
                   }}
                   onCubeStateChange={(newState) => {
-                    console.log('[v0] Cube state changed:', newState)
+                    console.log('[Cube] Cube state changed:', newState)
                     // Check if cube is solved (all faces uniform color)
                     const solved = Object.values(newState).every(face =>
                       face.every(square => square === face[0])

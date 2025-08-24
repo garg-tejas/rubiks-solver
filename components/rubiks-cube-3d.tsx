@@ -304,8 +304,9 @@ export function RubiksCube3D({ className, solution, onMoveComplete, onCubeStateC
         const moves = ['R', "R'", 'L', "L'", 'U', "U'", 'D', "D'", 'F', "F'", 'B', "B'"]
         let newState = JSON.parse(JSON.stringify(SOLVED_CUBE)) as CubeState
 
-        // Apply 25 random moves for a proper scramble
-        for (let i = 0; i < 25; i++) {
+        // Apply random moves for a proper scramble (15-30 moves for good variety)
+        const numMoves = Math.floor(Math.random() * 16) + 15 // 15-30 moves
+        for (let i = 0; i < numMoves; i++) {
             const randomMove = moves[Math.floor(Math.random() * moves.length)]
             newState = applyMove(randomMove, newState)
         }
@@ -314,7 +315,7 @@ export function RubiksCube3D({ className, solution, onMoveComplete, onCubeStateC
         onCubeStateChange?.(newState)
         setCurrentStep(0)
         setIsPlaying(false)
-        console.log('[v0] Cube scrambled with 25 random moves')
+        console.log(`[3D] Cube scrambled with ${numMoves} random moves`)
     }, [applyMove, onCubeStateChange])
 
     // Manual move function
@@ -601,19 +602,36 @@ export function RubiksCube3D({ className, solution, onMoveComplete, onCubeStateC
     const handleClick = (e: React.MouseEvent) => {
         if (isDragging) return
 
-        // Determine which face was clicked based on mouse position and rotation
+        // Get click position relative to canvas center
         const rect = canvasRef.current!.getBoundingClientRect()
         const x = e.clientX - rect.left - rect.width / 2
         const y = e.clientY - rect.top - rect.height / 2
 
-        // Simple face detection based on cube orientation
+        // Determine most prominent face based on current rotation
+        // This is a simplified but more accurate mapping than before
         let move = ''
-        if (Math.abs(x) > Math.abs(y)) {
-            move = x > 0 ? 'R' : 'L'
+
+        // Calculate which face is most visible based on rotation
+        const rotX = rotation.x * Math.PI / 180
+        const rotY = rotation.y * Math.PI / 180
+
+        // Determine primary direction based on rotation and click position
+        if (Math.abs(Math.sin(rotY)) > 0.5) {
+            // Left/Right faces are prominent
+            move = Math.sin(rotY) > 0 ? 'R' : 'L'
+        } else if (Math.abs(Math.sin(rotX)) > 0.3) {
+            // Top/Bottom faces are prominent  
+            move = Math.sin(rotX) > 0 ? 'D' : 'U'
         } else {
-            move = y < 0 ? 'U' : 'D'
+            // Front face is prominent, use click position
+            if (Math.abs(x) > Math.abs(y)) {
+                move = x > 0 ? 'R' : 'L'
+            } else {
+                move = y < 0 ? 'U' : 'D'
+            }
         }
 
+        console.log(`[3D] Click at (${x.toFixed(0)}, ${y.toFixed(0)}) -> Move: ${move}`)
         makeMove(move)
     }
 

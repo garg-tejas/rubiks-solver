@@ -47,7 +47,7 @@ export default function HomePage() {
             <span className="text-primary"> Seconds</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto text-balance">
-            Real-time computer vision with OpenCV.js and Kociemba's algorithm.
+            Interactive Rubik's cube solver with 3D visualization and algorithm demonstrations.
           </p>
 
           {/* Mode Selection Cards */}
@@ -88,7 +88,7 @@ export default function HomePage() {
                   <Camera className="w-8 h-8 text-accent" />
                 </div>
                 <CardTitle className="font-heading font-bold text-xl">Live Camera Solver</CardTitle>
-                <CardDescription>Real-time cube detection via webcam with OpenCV.js computer vision</CardDescription>
+                <CardDescription>Webcam interface for cube analysis (demo mode - real CV in development)</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
                 <Link href="/upload">
@@ -109,15 +109,15 @@ export default function HomePage() {
           <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground">
             <div className="flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
-              <span className="font-medium">95% Detection Accuracy</span>
+              <span className="font-medium">Interactive 3D Cube</span>
             </div>
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-yellow-500" />
-              <span className="font-medium">Under 25 Moves</span>
+              <span className="font-medium">Algorithm Visualization</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-accent" />
-              <span className="font-medium">2 Second Solving</span>
+              <span className="font-medium">Educational Tool</span>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Two-phase algorithm generates optimal solutions in under 25 moves within 2 seconds
+                  Advanced two-phase algorithm providing optimal solutions with mathematical precision
                 </p>
               </CardContent>
             </Card>

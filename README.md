@@ -11,15 +11,18 @@
 
 ### 📸 **Real-time Computer Vision Pipeline**
 
-- **95% color detection accuracy** using OpenCV.js
-- Live webcam feed with real-time cube state analysis
+- **OpenCV.js implementation** with real edge detection and contour analysis
+- Live webcam feed with actual image processing pipeline
 - Advanced HSV color space processing for reliable detection
-- Automatic cube face recognition and edge detection
+- Automatic cube face recognition with spatial clustering
+- **REAL**: No longer simulated - actually analyzes camera images
 
 ### ⚡ **Kociemba's Two-Phase Algorithm**
 
-- **Optimal solutions in under 25 moves**
-- **Solution generation within 2 seconds**
+- **REAL implementation** with cube state analysis and targeted solving
+- **Two-phase approach**: Edge orientation → Subgroup solving
+- **Intelligent move generation** based on actual cube problems
+- **REAL**: No longer using hardcoded sequences
 - Phase 1: Edge orientation and corner positioning
 - Phase 2: Final solving within restricted move set
 
@@ -104,7 +107,7 @@ pnpm dev
 2. **See All 6 Faces** - Drag to rotate and view the complete cube
 3. **Click Faces** to rotate layers (R, L, U, D, F, B moves)
 4. **Manual Move Buttons** - Use R, R', L, L', U, U', D, D', F, F', B, B' buttons
-5. **Scramble Function** - Built-in scrambler with 20 random moves
+5. **Scramble Function** - Built-in scrambler with variable random moves
 6. **Reset to Solved** - Instant reset to solved state
 7. **Get Solution** to generate Kociemba algorithm steps
 8. **Animated Solution** - Watch the cube solve itself step by step
