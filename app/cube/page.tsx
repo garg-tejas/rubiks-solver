@@ -50,9 +50,8 @@ export default function CubePage() {
 
     console.log("[Cube] Scrambling cube...")
 
-    setTimeout(() => {
-      setIsScrambling(false)
-    }, 1000)
+    // No artificial delay needed - scrambling happens instantly
+    setIsScrambling(false)
   }
 
   const handleReset = () => {

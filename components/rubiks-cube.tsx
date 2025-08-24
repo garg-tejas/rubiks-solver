@@ -79,17 +79,28 @@ export function RubiksCube({ cubeManager }: RubiksCubeProps) {
   }, [autoRotate])
 
   const handlePieceClick = (pieceId: string) => {
-    console.log("[v0] Cube piece clicked:", pieceId)
+    console.log("[3D] Cube piece clicked:", pieceId)
     setAutoRotate(!autoRotate)
 
-    // In a full implementation, this would determine the move based on the clicked piece
-    // For now, we'll just apply a random move for demonstration
+    // Determine move based on clicked piece position
     if (cubeManager) {
-      const randomMoves = ["R", "U", "F", "L", "D", "B"]
-      const randomMove = randomMoves[Math.floor(Math.random() * randomMoves.length)]
-      cubeManager.applyMove(randomMove)
+      // Parse piece ID to determine appropriate move
+      const [x, y, z] = pieceId.split('-').map(Number)
 
-      // Update pieces
+      let move = 'R' // Default fallback
+
+      // Determine move based on piece position
+      if (Math.abs(x) === 1) {
+        move = x > 0 ? 'R' : 'L'
+      } else if (Math.abs(y) === 1) {
+        move = y > 0 ? 'U' : 'D'
+      } else if (Math.abs(z) === 1) {
+        move = z > 0 ? 'F' : 'B'
+      }
+
+      cubeManager.applyMove(move)
+
+      // Update pieces after move
       const pieces = cubeManager.getCubePieces()
       setCubePieces(pieces)
     }

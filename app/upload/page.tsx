@@ -64,7 +64,8 @@ export default function CameraPage() {
       accuracy += Math.max(0, 100 - (deviation * 10)) // Penalty for deviation
     })
 
-    return Math.max(60, Math.min(100, accuracy / expectedColors.length)) // 60-100% range
+    // Return calculated accuracy without artificial bounds
+    return Math.min(100, Math.max(0, accuracy / expectedColors.length))
   }
 
   const resetSession = () => {
